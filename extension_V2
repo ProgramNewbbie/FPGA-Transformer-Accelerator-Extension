@@ -24,7 +24,7 @@ output_buffers = {0: None, 1: None}    # 시뮬레이션용 출력 버퍼
 # output_buffers = { 0: allocate(shape=(64,768), dtype='int8'),   # 출력 버퍼를 CMA 메모리에 할당
 #                    1: allocate(shape=(64,768), dtype='int8') }
 
-# ❌ 삭제
+# ❌ 삭제 [Pipeline Stage 2] FPGA 하드웨어 연산 스테이지
 def mock_fpga_kernel(buf_idx):         # FPGA 동작을 흉내 내는 시뮬레이션 함수
     in_data = input_buffers[buf_idx]   # 입력 버퍼 데이터 읽기
     time.sleep(0.5)                    # FPGA 계산 시간을 0.5초로 가정
@@ -70,7 +70,7 @@ def interrupt_worker():                # 시뮬레이션용 인터럽트 처리 
 #         cpu_post_queue.put(buf_idx)                 # CPU 후처리 Queue로 전달
 #         fpga_done_queue.task_done()                 # 완료 Queue 작업 종료
 
-def run_simulation(total_data_count):   # 전체 데이터 처리 과정 실행
+def run_simulation(total_data_count):   # 전체 데이터 처리 과정 실행 [Pipeline Stage 1] 호스트 CPU 메인 스레드 (전처리/입력 & 결과 / 후처리)
     start_time = time.time()            # 시작 시간 저장
 
     t1 = threading.Thread(target=fpga_async_worker, daemon=True)    # FPGA 작업 스레드 생성
